@@ -1,26 +1,24 @@
 from selenium import webdriver
 import os
 import shutil
-from datetime import datetime
+import datetime
 
 
 def before_all(context):
     try:
-        shutil.rmtree(os.path.abspath(r'.\Screenshots'))
+        shutil.rmtree(os.path.abspath('.\\Screenshots'))
+        os.mkdir('.\\Screenshots')
     except FileNotFoundError:
-        os.mkdir(r'.\Screenshots')
-    context.driver = webdriver.Chrome(os.path.abspath('chromedriver.exe'))
-    context.driver.maximize_window()
+        os.mkdir('.\\Screenshots')
+    context.browser = webdriver.Chrome(os.path.abspath('chromedriver.exe'))
+    context.browser.maximize_window()
 
 
 def after_step(context, step):
     make_screen(context, step.name)
 
 
-def after_all(context):
-    context.driver.quit()
-
-
 def make_screen(context, screen_name):
-    time_now = datetime.strftime(datetime.now(), "%Y.%m.%d %H:%M:%S")
-    context.browser.get_screenshot_as_file(os.path.abspath(rf'.\Screenshots\{screen_name}_{time_now}.png'))
+    short_name = screen_name[:7]
+    time_now = datetime.datetime.now().strftime("%d-%m-%Y %H'%M''%S")
+    context.browser.get_screenshot_as_file(os.path.abspath(f"./Screenshots/{short_name}_{time_now}.png"))
