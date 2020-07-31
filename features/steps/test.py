@@ -11,7 +11,7 @@ NEW_PRICES = dict()
 
 @when('зайти на сайт "{site}"')
 def step_impl(context, site):
-    context.driver.get(site)
+    context.browser.get(site)
 
 
 @then('навести на "{element_name}" "{text}"')
@@ -19,22 +19,31 @@ def step_impl(context, element_name, text):
     drop_lists = {'Котировки': '//*[@class="nav"][text()="Котировки"]',
                   'Акции': '//*[@href="/equities/"][text()="Акции"]'}
     pathes = {'выпадающий список': drop_lists}
-    element = WebDriverWait(context.driver, TIMEOUT).until(EC.presence_of_element_located((By.XPATH, pathes[element_name][text])))
-    hov = ActionChains(context.driver).move_to_element(element)
+    element = WebDriverWait(context.browser, TIMEOUT).until(EC.presence_of_element_located((By.XPATH, pathes[element_name][text])))
+    hov = ActionChains(context.browser).move_to_element(element)
     hov.perform()
 
 
 @then('нажать на "{element_name}" "{text}"')
 def step_impl(context, element_name, text):
-    articles = {'Россия': '//*[@href="/equities/russia"]'}
-    pathes = {'пункт': articles}
-    element = WebDriverWait(context.driver, TIMEOUT).until(EC.presence_of_element_located((By.XPATH, pathes[element_name][text])))
+    articles = {'Россия': '//*[@href="/equities/russia"]',
+                "Вход": "//*[@class='login bold']"}
+    buttons = {"Вход": "//*[@class='newButton orange'][text()='Вход']"}
+    pathes = {'пункт': articles,
+              'кнопку': buttons}
+    element = WebDriverWait(context.browser, TIMEOUT).until(EC.presence_of_element_located((By.XPATH, pathes[element_name][text])))
     element.click()
 
 
-@then('проверить заголовок "Россия - акции"')
-def step_impl(context):
-    assert context.driver.find_elements_by_xpath("//*[contains(text(), 'Россия - акции')]")
+@then('проверить "{element_name}" "{value}"')
+def step_impl(context, element_name, value):
+    titles = {"Россия - акции": "//*[contains(text(), 'Россия - акции')]"}
+    errors = {"Ошибка логина": "//*[@data-tooltip='Пожалуйста, введите действительный электронный адрес']",
+              "Ошибка пароля": "//*[@data-tooltip='Используйте 4-15 символов, включая как минимум 2 буквы и 2 цифры.']",
+              "Ошибка данных": "//*[@id='serverErrors'][text()='Неверный логин или пароль, повторите попытку']"}
+    pathes = {"заголовок": titles,
+              "ошибка": errors}
+    assert context.browser.find_element_by_xpath(pathes[element_name][value])
 
 
 @then('собрать выросшие на "{percent}" процентов акции')
@@ -82,14 +91,14 @@ def step_impl(context, percent):
               "Юнипро": "//td[@class='pid-21302-last']",
               "Яндекс": "//td[@class='pid-102063-last']",
               }
-    WebDriverWait(context.driver, TIMEOUT).until(EC.presence_of_element_located((By.XPATH, "//td[@class='pid-102063-last']")))
+    WebDriverWait(context.browser, TIMEOUT).until(EC.presence_of_element_located((By.XPATH, "//td[@class='pid-102063-last']")))
     conn = sqlite3.connect(r'.\stocks')
     try:
         cursor = conn.cursor()
         for name, price in cursor.execute('SELECT * FROM stock_price'):
-            WebDriverWait(context.driver, TIMEOUT).until(
+            WebDriverWait(context.browser, TIMEOUT).until(
                 EC.presence_of_element_located((By.XPATH, prices[name])))
-            price_now = float(context.driver.find_element_by_xpath(prices[name]).text.replace('.', '').replace(',', '.'))
+            price_now = float(context.browser.find_element_by_xpath(prices[name]).text.replace('.', '').replace(',', '.'))
             price_from_db = (float(price.replace('.', '').replace(',', '.')))
             if (price_now / price_from_db) > (1 + (int(percent) / 100)):
                 NEW_PRICES[name] = price_now
@@ -105,3 +114,25 @@ def step_impl(context, filename):
         json.dump(NEW_PRICES, outfile)
 
 
+@then('закрыть "{text}" всплывающее окно')
+def step_impl(context, text):
+    pathes = {"большое": "//*[@class='popupCloseIcon largeBannerCloser']",
+              "маленькое": "//*[@class='popupCloseIcon']"}
+    el = WebDriverWait(context.browser, TIMEOUT).until(
+        EC.visibility_of_element_located((By.XPATH, pathes[text])))
+    el.click()
+
+
+@then('ввести в "{element_name}" "{value}"')
+def step_impl(context, element_name, value):
+    inputs = {"Поле логина": 'loginFormUser_email',
+              "Поле пароля": 'loginForm_password'}
+    el = WebDriverWait(context.browser, TIMEOUT).until(EC.visibility_of_element_located((By.ID, inputs[element_name])))
+    el.send_keys(value)
+
+
+@then('очистить "{element_name}"')
+def step_impl(context, element_name):
+    inputs = {"Поле логина": 'loginFormUser_email',
+              "Поле пароля": 'loginForm_password'}
+    context.browser.find_element_by_id(inputs[element_name]).clear()
