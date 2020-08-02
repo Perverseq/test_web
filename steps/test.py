@@ -68,8 +68,8 @@ def step_impl(context, percent):
 
 @then('выгрузить данные в "{filename}"')
 def step_impl(context, filename):
-    with open(filename, 'w') as outfile:
-        json.dump(context.report_data, outfile)
+    with open(filename, 'w', encoding='utf-8') as outfile:
+        json.dump(context.report_data, outfile, ensure_ascii=False)
 
 
 @then('закрыть "{text}" всплывающее окно')
