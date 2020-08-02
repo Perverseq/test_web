@@ -5,6 +5,8 @@ import datetime
 
 
 def before_all(context):
+    context.report_data = dict()
+    context.new_prices = dict()
     try:
         shutil.rmtree(os.path.abspath('.\\Screenshots'))
         os.mkdir('.\\Screenshots')
