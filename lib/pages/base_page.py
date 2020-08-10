@@ -14,6 +14,7 @@ class BasePage(object):
         self.timeout = 10
 
     def find_element(self, *loc):
+        print(*loc)
         return self.browser.find_element(*loc)
 
     def find_elements(self, *loc):
