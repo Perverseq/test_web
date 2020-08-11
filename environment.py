@@ -32,17 +32,8 @@ def after_step(context, step):
 
 
 def after_scenario(context, scenario):
-    status = ''
-    if str(scenario.status) == 'Status.passed':
-        status = 'Passed'
-    elif str(scenario.status) == 'Status.failed':
-        status = 'Failed'
-    elif str(scenario.status) == 'Status.skipped':
-        status = 'Skipped'
-    elif str(scenario.status) == 'Status.untested':
-        status = 'Untested'
     steps_amount = len(scenario.steps)
-    context.scenario_results[scenario.name] = [status, steps_amount, str(scenario.duration)]
+    context.scenario_results[scenario.name] = [str(scenario.status)[7:], steps_amount, str(scenario.duration)]
 
 
 def make_screen(context, screen_name):
