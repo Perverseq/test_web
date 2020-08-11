@@ -3,6 +3,7 @@ import os
 import shutil
 import datetime
 import json
+from helpers import setup_browser
 
 
 def before_all(context):
@@ -21,7 +22,8 @@ def before_all(context):
     except FileNotFoundError:
         with open(".\\result.json", 'w', encoding='utf-8'):
             print("Result file was created.")
-    context.browser = webdriver.Chrome(os.path.abspath('chromedriver.exe'))
+    context.browser = setup_browser(context.config.userdata.get('browser', 'chrome'),
+                                    context.config.userdata.get('headless', 'False'))
     context.browser.maximize_window()
 
 
@@ -39,7 +41,6 @@ def after_scenario(context, scenario):
         status = 'Skipped'
     elif str(scenario.status) == 'Status.untested':
         status = 'Untested'
-    print(status)
     steps_amount = len(scenario.steps)
     context.scenario_results[scenario.name] = [status, steps_amount, str(scenario.duration)]
 
@@ -53,3 +54,4 @@ def make_screen(context, screen_name):
 def after_all(context):
     with open(".\\result.json", 'a', encoding='utf-8') as outfile:
         json.dump(context.scenario_results, outfile, ensure_ascii=False)
+    context.browser.close()
