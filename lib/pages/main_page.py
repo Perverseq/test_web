@@ -15,8 +15,7 @@ class MainPage(BasePage):
     drop_lists_locators = {'Котировки': (By.XPATH, '//*[@class="nav"][text()="Котировки"]'),
                            'Акции': (By.XPATH, '//*[@href="/equities/"][text()="Акции"]')}
 
-    buttons_locators = {"Вход": (By.XPATH, "//*[@class='newButton orange'][text()='Вход']"),
-                        "маленького всплывающего окна": (By.XPATH, "//*[@class='popupCloseIcon']")}
+    buttons_locators = {"Вход": (By.XPATH, "//*[@class='newButton orange'][text()='Вход']")}
 
     articles_locators = {"Россия": (By.XPATH, "//*[@href='/equities/russia']"),
                          "Вход": (By.XPATH, "//*[@class='login bold']")}
@@ -33,10 +32,6 @@ class MainPage(BasePage):
     def __init__(self, context):
         BasePage.__init__(self, context, base_url='https://ru.investing.com/')
 
-    def press_element(self, context, element_name, text):
-        WebDriverWait(context.browser, 3).until(EC.presence_of_element_located(self.pathes[element_name][text]))
-        self.find_element(*self.pathes[element_name][text]).click()
-
     def input_data(self, context, text, text1):
         WebDriverWait(context.browser, 3).until(EC.presence_of_element_located(self.inputs_locators[text]))
         self.find_element(*self.inputs_locators[text]).send_keys(text1)
@@ -45,12 +40,14 @@ class MainPage(BasePage):
         WebDriverWait(context.browser, 3).until(EC.presence_of_element_located(self.inputs_locators[text]))
         self.find_element(*self.inputs_locators[text]).clear()
 
-    def assert_page(self, element_name, value):
+    def assert_page(self, context, element_name, value):
+        WebDriverWait(context.browser, 3).until(EC.presence_of_element_located(self.pathes[element_name][value]))
         assert self.find_element(*self.pathes[element_name][value])
 
     def hover_element(self, context, element_type, value):
         WebDriverWait(context.browser, 3).until(EC.presence_of_element_located(self.pathes[element_type][value]))
         ActionChains(context.browser).move_to_element(self.find_element(*self.pathes[element_type][value])).perform()
 
-
-
+    def press_element(self, context, element_type, value):
+        WebDriverWait(context.browser, 3).until(EC.presence_of_element_located(self.pathes[element_type][value]))
+        self.find_element(*self.pathes[element_type][value]).click()
