@@ -1,15 +1,11 @@
-from selenium import webdriver
 import os
 import shutil
 import datetime
-import json
-from helpers import setup_browser
+from helpers import setup_browser, Storage
 
 
 def before_all(context):
-    context.report_data = dict()
-    context.new_prices = dict()
-    context.scenario_results = dict()
+    context.storage = Storage()
     try:
         shutil.rmtree(os.path.abspath('.\\Screenshots'))
         os.mkdir('.\\Screenshots')
@@ -33,7 +29,7 @@ def after_step(context, step):
 
 def after_scenario(context, scenario):
     steps_amount = len(scenario.steps)
-    context.scenario_results[scenario.name] = [str(scenario.status)[7:], steps_amount, str(scenario.duration)]
+    context.storage.scenario_results[scenario.name] = [str(scenario.status)[7:], steps_amount, str(scenario.duration)]
 
 
 def make_screen(context, screen_name):
@@ -43,6 +39,5 @@ def make_screen(context, screen_name):
 
 
 def after_all(context):
-    with open(".\\result.json", 'a', encoding='utf-8') as outfile:
-        json.dump(context.scenario_results, outfile, ensure_ascii=False)
+    context.storage.save_file(context.storage.scenario_results, '.\\result.json')
     context.browser.close()
