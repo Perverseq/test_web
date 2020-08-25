@@ -5,55 +5,20 @@
 {% endblock %}
 
 {% block body %}
-
 <div class="card-deck mb-3 text-center">
+  {% for scenario in articles %}
     <div class="card mb-4 shadow-sm">
       <div class="card-header">
-        <h1 class="my-0 font-weight-normal">Сценарий: {{ articles[0][0] }}</h1>
+        <h1 class="my-0 font-weight-normal">Сценарий: {{ scenario[0] }}</h1>
       </div>
       <div class="card-body">
-        <h4 class="card-title pricing-card-title">Статус сценария: {{ articles[0][1][0] }}</h4>
+        <h4 class="card-title pricing-card-title">Статус сценария: {{ scenario[1][0] }}</h4>
         <ul class="list-unstyled mt-3 mb-4">
-          <li>Количество шагов: {{ articles[0][1][1] }}</li>
-          <li>Время выполнения: {{ articles[0][1][2] }}</li>
+          <li>Количество шагов: {{ scenario[1][1] }}</li>
+          <li>Время выполнения: {{ scenario[1][2] }}</li>
         </ul>
       </div>
     </div>
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header">
-        <h1 class="my-0 font-weight-normal">Сценарий: {{ articles[1][0] }}</h1>
-      </div>
-      <div class="card-body">
-        <h4 class="card-title pricing-card-title">Статус сценария: {{ articles[1][1][0] }}</h4>
-        <ul class="list-unstyled mt-3 mb-4">
-          <li>Количество шагов: {{ articles[1][1][1] }}</li>
-          <li>Время выполнения: {{ articles[1][1][2] }}</li>
-        </ul>
-      </div>
-    </div>
-  <div class="card mb-4 shadow-sm">
-      <div class="card-header">
-        <h1 class="my-0 font-weight-normal">Сценарий: {{ articles[2][0] }}</h1>
-      </div>
-      <div class="card-body">
-        <h4 class="card-title pricing-card-title">Статус сценария: {{ articles[2][1][0] }}</h4>
-        <ul class="list-unstyled mt-3 mb-4">
-          <li>Количество шагов: {{ articles[2][1][1] }}</li>
-          <li>Время выполнения: {{ articles[2][1][2] }}</li>
-        </ul>
-      </div>
-    </div>
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header">
-        <h1 class="my-0 font-weight-normal">Сценарий: {{ articles[3][0] }}</h1>
-      </div>
-      <div class="card-body">
-        <h4 class="card-title pricing-card-title">Статус сценария: {{ articles[3][1][0] }}</h4>
-        <ul class="list-unstyled mt-3 mb-4">
-          <li>Количество шагов: {{ articles[3][1][1] }}</li>
-          <li>Время выполнения: {{ articles[3][1][2] }}</li>
-        </ul>
-      </div>
-    </div>
+  {% endfor %}
   </div>
 {% endblock %}
