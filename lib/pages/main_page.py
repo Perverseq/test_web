@@ -1,7 +1,5 @@
 from selenium.webdriver.common.by import By
 from .base_page import BasePage
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
 
@@ -32,22 +30,17 @@ class MainPage(BasePage):
     def __init__(self, context):
         BasePage.__init__(self, context, base_url='https://ru.investing.com/')
 
-    def input_data(self, context, text, text1):
-        WebDriverWait(context.browser, 3).until(EC.presence_of_element_located(self.inputs_locators[text]))
+    def input_data(self, text, text1):
         self.find_element(*self.inputs_locators[text]).send_keys(text1)
 
-    def clear_inputs(self, context, text):
-        WebDriverWait(context.browser, 3).until(EC.presence_of_element_located(self.inputs_locators[text]))
+    def clear_inputs(self, text):
         self.find_element(*self.inputs_locators[text]).clear()
 
-    def assert_page(self, context, element_name, value):
-        WebDriverWait(context.browser, 3).until(EC.presence_of_element_located(self.pathes[element_name][value]))
+    def assert_page(self, element_name, value):
         assert self.find_element(*self.pathes[element_name][value])
 
     def hover_element(self, context, element_type, value):
-        WebDriverWait(context.browser, 3).until(EC.presence_of_element_located(self.pathes[element_type][value]))
         ActionChains(context.browser).move_to_element(self.find_element(*self.pathes[element_type][value])).perform()
 
-    def press_element(self, context, element_type, value):
-        WebDriverWait(context.browser, 3).until(EC.presence_of_element_located(self.pathes[element_type][value]))
+    def press_element(self, element_type, value):
         self.find_element(*self.pathes[element_type][value]).click()

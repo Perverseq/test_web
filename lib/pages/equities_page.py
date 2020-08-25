@@ -13,8 +13,7 @@ class EquitiesPage(BasePage):
     def __init__(self, context):
         BasePage.__init__(self, context, base_url='https://ru.investing.com/equities/russia')
 
-    def assert_page(self, context, element_name, value):
-        WebDriverWait(context.browser, TIMEOUT).until(EC.presence_of_element_located(self.titles[value]))
+    def assert_page(self, element_name, value):
         assert self.find_element(*self.pathes[element_name][value])
 
     def gather_equities_prices(self, context):
