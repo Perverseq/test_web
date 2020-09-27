@@ -1,28 +1,28 @@
-from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-import json
-import sqlite3
+import datetime
 import os
+import shutil
+from selenium import webdriver
 
 
-def setup_browser(browser, headless):
-    if browser == 'chrome':
-        if headless == 'True':
-            options = webdriver.ChromeOptions()
-            options.add_argument('headless')
-            browser_set = webdriver.Chrome(os.path.abspath('chromedriver.exe'), chrome_options=options)
-        else:
-            browser_set = webdriver.Chrome(os.path.abspath('chromedriver.exe'))
-    elif browser == 'firefox':
-        if headless == 'True':
-            options = webdriver.FirefoxOptions()
-            options.add_argument('headless')
-            browser_set = webdriver.Firefox(executable_path=os.path.abspath('geckodriver.exe'), firefox_options=options)
-        else:
-            browser_set = webdriver.Firefox(executable_path=os.path.abspath('geckodriver.exe'))
-    return browser_set
+# def setup_browser(browser, headless):
+#     if browser == 'chrome':
+#         if headless == 'True':
+#             options = webdriver.ChromeOptions()
+#             options.add_argument('headless')
+#             browser_set = webdriver.Chrome(os.path.abspath('chromedriver.exe'), chrome_options=options)
+#         else:
+#             browser_set = webdriver.Chrome(os.path.abspath('chromedriver.exe'))
+#     elif browser == 'firefox':
+#         if headless == 'True':
+#             options = webdriver.FirefoxOptions()
+#             options.add_argument('headless')
+#             browser_set = webdriver.Firefox(executable_path=os.path.abspath('geckodriver.exe'), firefox_options=options)
+#         else:
+#             browser_set = webdriver.Firefox(executable_path=os.path.abspath('geckodriver.exe'))
+#     return browser_set
 
 
 def close_small_banner(context):
@@ -33,24 +33,20 @@ def close_small_banner(context):
         print("Маленький баннер не появился.")
 
 
-class Storage:
-    prices_from_db = dict()
-    actual_prices = dict()
-    report_data = dict()
-    dividends = dict()
-    loaded_from_json = list()
-    scenario_results = dict()
+def make_screen(context, screen_name):
+    short_name = screen_name[:7]
+    time_now = datetime.datetime.now().strftime("%d-%m-%Y %H'%M''%S")
+    context.browser.get_screenshot_as_file(os.path.abspath(f"./Screenshots/{short_name}_{time_now}.png"))
 
-    def __init__(self):
-        conn = sqlite3.connect(r'.\stocks')
-        cursor = conn.cursor()
-        for name, price in cursor.execute('SELECT * FROM stock_price'):
-            self.prices_from_db[name] = price
-        conn.close()
 
-    def print_size(self):
-        print(self.__sizeof__())
+def create_dir(path):
+    if os.path.exists(path):
+        shutil.rmtree(os.path.abspath(path))
+    os.mkdir(path)
 
-    def save_file(self, value, filename):
-        with open(filename, 'w', encoding='utf-8') as outfile:
-            json.dump(value, outfile, ensure_ascii=False)
+
+def create_file(path):
+    if os.path.exists(path):
+        os.remove(path)
+    with open(path, 'w', encoding='utf-8'):
+        print("Result file was created.")
