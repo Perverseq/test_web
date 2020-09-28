@@ -4,25 +4,6 @@ from selenium.webdriver.common.by import By
 import datetime
 import os
 import shutil
-from selenium import webdriver
-
-
-# def setup_browser(browser, headless):
-#     if browser == 'chrome':
-#         if headless == 'True':
-#             options = webdriver.ChromeOptions()
-#             options.add_argument('headless')
-#             browser_set = webdriver.Chrome(os.path.abspath('chromedriver.exe'), chrome_options=options)
-#         else:
-#             browser_set = webdriver.Chrome(os.path.abspath('chromedriver.exe'))
-#     elif browser == 'firefox':
-#         if headless == 'True':
-#             options = webdriver.FirefoxOptions()
-#             options.add_argument('headless')
-#             browser_set = webdriver.Firefox(executable_path=os.path.abspath('geckodriver.exe'), firefox_options=options)
-#         else:
-#             browser_set = webdriver.Firefox(executable_path=os.path.abspath('geckodriver.exe'))
-#     return browser_set
 
 
 def close_small_banner(context):

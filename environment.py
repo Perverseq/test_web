@@ -4,7 +4,10 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from behave import fixture
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
+from behave import use_fixture
+import json
+from multiprocessing import Process
+from subprocess import Popen
 
 
 @fixture
@@ -28,20 +31,31 @@ def browser(context):
             print('\n Starting Firefox for test...')
     else:
         raise
-    # browser.wait = WebDriverWait(browser, 15)
-    # browser.implicitly_wait(15)
     yield context.browser
     print("\nQuit browser...")
     context.browser.quit()
+
+
+def before_tag(context, tag):
+    if tag == "threads":
+        try:
+            with open('.\\report.json', 'r', encoding='utf-8') as outfile:
+                context.storage.loaded_from_json = list(json.load(outfile).keys())
+                print(context.storage.loaded_from_json)
+        except ValueError: #
+            print('Json file is empty.')
+        for context.company in context.storage.loaded_from_json:
+            print(context.company)
+            Popen(f'behave -tags="@threads" features/')
+    if tag == "browser":
+        use_fixture(browser, context)
 
 
 def before_all(context):
     context.storage = Storage()
     create_dir('.\\Screenshots')
     create_file(".\\result.json")
-    # context.browser = setup_browser(context.config.userdata.get('browser', 'chrome'),
-    #                                context.config.userdata.get('headless', 'False'))
-    # context.browser.maximize_window()
+    create_file(".\\dividends.json")
 
 
 def after_step(context, step):
@@ -55,4 +69,3 @@ def after_scenario(context, scenario):
 
 def after_all(context):
     context.storage.save_file(context.storage.scenario_results, '.\\result.json')
-    # context.browser.close()

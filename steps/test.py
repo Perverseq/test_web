@@ -79,3 +79,24 @@ def step_impl(context):
             context.storage.loaded_from_json.remove(data)
             context.browser.back()
             close_small_banner(context)
+
+
+@then("перейти на страницу акции")
+def step_impl(context):
+    # print(context.config.userdata.get('company', None))
+    # context.company = context.config.userdata.get('company', None)
+    if context.company:
+        eq = WebDriverWait(context.browser, TIMEOUT).until(
+            EC.presence_of_element_located((By.XPATH, f"//tr[starts-with(@id, 'pair')]//a[text()='{context.company}']")))
+        print(f'xpath //tr[starts-with(@id, "pair")]//a[text()="{context.company}"]')
+        eq.click()
+    else:
+        print('Компания не задана')
+
+
+@then("собрать дивиденды акции")
+def step_impl(context):
+    context.storage.dividends[context.company] = WebDriverWait(context.browser, TIMEOUT).until(
+                EC.presence_of_element_located((By.XPATH,
+                '//*[@id="leftColumn"]//*[@class="inlineblock"]/span[text()="Дивиденды"]//following-sibling::*[1]'))
+    ).text
