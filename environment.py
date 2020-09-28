@@ -46,7 +46,7 @@ def before_tag(context, tag):
             print('Json file is empty.')
         for context.company in context.storage.loaded_from_json:
             print(context.company)
-            Popen(f'behave -tags="@threads" features/')
+            Popen(f'behave -tags="@threads" features/dividends.feature')
     if tag == "browser":
         use_fixture(browser, context)
 
