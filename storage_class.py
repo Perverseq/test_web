@@ -5,7 +5,7 @@ import json
 class Storage:
     prices_from_db = dict()
     actual_prices = dict()
-    report_data = dict()
+    report_data = list()
     dividends = dict()
     loaded_from_json = list()
     scenario_results = dict()

@@ -5,13 +5,13 @@ import datetime
 import os
 import shutil
 
-
-def close_small_banner(context):
-    try:
-        WebDriverWait(context.browser, 5).until(
-            EC.presence_of_element_located((By.XPATH, "//*[@class='js-promotion-popup-close closePopup']"))).click()
-    except:
-        print("Маленький баннер не появился.")
+#
+# def close_small_banner(context):
+#     try:
+#         WebDriverWait(context.browser, 5).until(
+#             EC.presence_of_element_located((By.XPATH, "//*[@class='js-promotion-popup-close closePopup']"))).click()
+#     except:
+#         print("Маленький баннер не появился.")
 
 
 def make_screen(context, screen_name):
