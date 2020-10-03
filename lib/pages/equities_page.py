@@ -6,7 +6,7 @@ TIMEOUT = 60
 
 
 class EquitiesPage(BasePage):
-    titles = {"Россия - акции": (By.XPATH, "//*[contains(text(), 'Россия - акции')]")}
+    titles = {"Россия - акции": (By.XPATH, "//*[@id='leftColumn']/h1")}
 
     pathes = {"заголовок": titles}
 
@@ -28,4 +28,5 @@ class EquitiesPage(BasePage):
             price_now = float(context.storage.actual_prices[name].replace('.', '').replace(',', '.'))
             price_from_db = (float(price.replace('.', '').replace(',', '.')))
             if (price_now / price_from_db) > (1 + (int(percent) / 100)):
-                context.storage.report_data[name] = price_now
+                # context.storage.report_data[name] = price_now
+                context.storage.report_data.append(name)
