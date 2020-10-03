@@ -1,6 +1,6 @@
 from behave import *
 from lib.pages import *
-from helpers import close_small_banner
+# from helpers import close_small_banner
 import json
 
 
@@ -8,7 +8,7 @@ import json
 def step_impl(context, site):
     context.page = BasePage(context)
     context.page.visit(site)
-    close_small_banner(context)
+    # close_small_banner(context)
 
 
 @then('навести на "{element_name}" "{text}"')
@@ -56,45 +56,45 @@ def step_impl(context, element_name):
     context.page.clear_inputs(element_name)
 
 
-@when('загрузить данные из "{filename}"')
+@given('загрузить данные из "{filename}"')
 def step_impl(context, filename):
     with open(filename, 'r', encoding='utf-8') as outfile:
-        context.storage.loaded_from_json = list(json.load(outfile).items())
+        context.storage.loaded_from_json = list(json.load(outfile))
 
 
-@then("собрать дивиденды акций")
-def step_impl(context):
-    while context.storage.loaded_from_json:
-        for data in context.storage.loaded_from_json:
-            eq = WebDriverWait(context.browser, TIMEOUT).until(
-                EC.presence_of_element_located((By.XPATH, f"//tr[starts-with(@id, 'pair')]//a[text()='{data[0]}']")))
-            print(f'xpath //tr[starts-with(@id, "pair")]//a[text()="{data[0]}"]' )
-            eq.click()
-            close_small_banner(context)
-            context.storage.dividends[data[0]] = WebDriverWait(context.browser, TIMEOUT).until(
-                EC.presence_of_element_located((By.XPATH,
-                '//*[@id="leftColumn"]//*[@class="inlineblock"]/span[text()="Дивиденды"]//following-sibling::*[1]'))
-                        ).text
-            print(f'xpath //*[@id="leftColumn"]//*[@class="inlineblock"]/span[text()="Дивиденды"]//following-sibling::*[1]')
-            context.storage.loaded_from_json.remove(data)
-            context.browser.back()
-            close_small_banner(context)
+# @then("собрать дивиденды акций")
+# def step_impl(context):
+#     while context.storage.loaded_from_json:
+#         for data in context.storage.loaded_from_json:
+#             eq = WebDriverWait(context.browser, TIMEOUT).until(
+#                 EC.presence_of_element_located((By.XPATH, f"//tr[starts-with(@id, 'pair')]//a[text()='{data[0]}']")))
+#             print(f'xpath //tr[starts-with(@id, "pair")]//a[text()="{data[0]}"]' )
+#             eq.click()
+#             close_small_banner(context)
+#             context.storage.dividends[data[0]] = WebDriverWait(context.browser, TIMEOUT).until(
+#                 EC.presence_of_element_located((By.XPATH,
+#                 '//*[@id="leftColumn"]//*[@class="inlineblock"]/span[text()="Дивиденды"]//following-sibling::*[1]'))
+#                         ).text
+#             print(f'xpath //*[@id="leftColumn"]//*[@class="inlineblock"]/span[text()="Дивиденды"]//following-sibling::*[1]')
+#             context.storage.loaded_from_json.remove(data)
+#             context.browser.back()
+#             close_small_banner(context)
 
 
-@then("перейти на страницу акции")
+@then('перейти на страницу акции компании')
 def step_impl(context):
     # print(context.config.userdata.get('company', None))
     # context.company = context.config.userdata.get('company', None)
-    if context.company:
+    # if context.company:
         eq = WebDriverWait(context.browser, TIMEOUT).until(
             EC.presence_of_element_located((By.XPATH, f"//tr[starts-with(@id, 'pair')]//a[text()='{context.company}']")))
         print(f'xpath //tr[starts-with(@id, "pair")]//a[text()="{context.company}"]')
         eq.click()
-    else:
-        print('Компания не задана')
+    # else:
+    #     print('Компания не задана')
 
 
-@then("собрать дивиденды акции")
+@then('собрать дивиденды акции компании')
 def step_impl(context):
     context.storage.dividends[context.company] = WebDriverWait(context.browser, TIMEOUT).until(
                 EC.presence_of_element_located((By.XPATH,
