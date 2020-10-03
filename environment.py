@@ -36,17 +36,21 @@ def browser(context):
     context.browser.quit()
 
 
+@fixture
+def company(context):
+    try:
+        with open('.\\report.json', 'r', encoding='utf-8') as outfile:
+            context.storage.loaded_from_json = list(json.load(outfile))
+            print(context.storage.loaded_from_json)
+    except ValueError:  #
+        print('Json file is empty.')
+    for context.company in context.storage.loaded_from_json:
+        yield context.company
+
+
 def before_tag(context, tag):
     if tag == "threads":
-        try:
-            with open('.\\report.json', 'r', encoding='utf-8') as outfile:
-                context.storage.loaded_from_json = list(json.load(outfile).keys())
-                print(context.storage.loaded_from_json)
-        except ValueError: #
-            print('Json file is empty.')
-        for context.company in context.storage.loaded_from_json:
-            print(context.company)
-            Popen(f'behave -tags="@threads" features/dividends.feature')
+        use_fixture(company, context)
     if tag == "browser":
         use_fixture(browser, context)
 
