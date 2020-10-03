@@ -26,9 +26,8 @@ def browser(context):
         if headless == "True":
             options.add_argument("--headless")
             print("Firefox will start in headless mode")
-        else:
-            context.browser = webdriver.Firefox(options=options)
-            print('\n Starting Firefox for test...')
+        print('\n Starting Firefox for test...')
+        context.browser = webdriver.Firefox(options=options)
     else:
         raise
     yield context.browser
