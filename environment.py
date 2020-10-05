@@ -1,4 +1,4 @@
-from helpers import make_screen, create_file, create_dir
+from helpers import make_screen
 from storage_class import Storage
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
@@ -6,8 +6,6 @@ from behave import fixture
 from selenium import webdriver
 from behave import use_fixture
 import json
-from multiprocessing import Process
-from subprocess import Popen
 
 
 @fixture
@@ -35,30 +33,16 @@ def browser(context):
     context.browser.quit()
 
 
-@fixture
-def company(context):
-    try:
-        with open('.\\report.json', 'r', encoding='utf-8') as outfile:
-            context.storage.loaded_from_json = list(json.load(outfile))
-            print(context.storage.loaded_from_json)
-    except ValueError:  #
-        print('Json file is empty.')
-    for context.company in context.storage.loaded_from_json:
-        yield context.company
-
-
 def before_tag(context, tag):
-    if tag == "threads":
-        use_fixture(company, context)
     if tag == "browser":
         use_fixture(browser, context)
 
 
 def before_all(context):
     context.storage = Storage()
-    create_dir('.\\Screenshots')
-    create_file(".\\result.json")
-    create_file(".\\dividends.json")
+    # create_dir('.\\Screenshots')
+    # create_file(".\\result.json")
+    # create_file(".\\dividends.json")
 
 
 def after_step(context, step):
@@ -71,4 +55,14 @@ def after_scenario(context, scenario):
 
 
 def after_all(context):
-    context.storage.save_file(context.storage.scenario_results, '.\\result.json')
+    with open('.\\result.json', 'r+', encoding='utf-8') as outfile:
+        print(context.storage.scenario_results)
+        try:
+            context.storage.scenario_results_json = json.load(outfile)
+            context.storage.scenario_results.update(context.storage.scenario_results_json)
+            outfile.seek(0)
+            outfile.truncate()
+        except ValueError:
+            print('results empty')
+        json.dump(context.storage.scenario_results, outfile, ensure_ascii=False)
+    # context.storage.save_file(context.storage.scenario_results, '.\\result.json')
