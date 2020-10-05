@@ -9,6 +9,7 @@ class Storage:
     dividends = dict()
     loaded_from_json = list()
     scenario_results = dict()
+    scenario_results_json = dict()
 
     def __init__(self):
         conn = sqlite3.connect(r'.\stocks')
@@ -21,5 +22,13 @@ class Storage:
         print(self.__sizeof__())
 
     def save_file(self, value, filename):
-        with open(filename, 'w', encoding='utf-8') as outfile:
+        with open(filename, 'r+', encoding='utf-8') as outfile:
+            if filename == 'dividends.json':
+                try:
+                    self.dividends = json.load(outfile)
+                    value.update(self.dividends)
+                    outfile.seek(0)
+                    outfile.truncate()
+                except ValueError:
+                    print('Dividens empty')
             json.dump(value, outfile, ensure_ascii=False)
