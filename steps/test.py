@@ -84,7 +84,7 @@ def step_impl(context, filename):
 @then('перейти на страницу акции компании')
 def step_impl(context):
     # print(context.config.userdata.get('company', None))
-    # context.company = context.config.userdata.get('company', None)
+        context.company = context.config.userdata.get('company', None)
     # if context.company:
         eq = WebDriverWait(context.browser, TIMEOUT).until(
             EC.presence_of_element_located((By.XPATH, f"//tr[starts-with(@id, 'pair')]//a[text()='{context.company}']")))
