@@ -1,36 +1,8 @@
-import os
 import subprocess
 import json
 import timeit
 from helpers import create_file, create_dir
 from multiprocessing import Pool
-
-
-def get_features():
-    features = [os.path.join(os.path.abspath('features'), feature) for feature in os.listdir('features')]
-    return features
-
-
-def get_tags():
-    tags = list()
-    features = get_features()
-    for feature in features:
-        with open(feature) as f:
-            tag_in_file = [tag for tag in (stroke.rstrip().lstrip() for
-                                           stroke in f.readlines() if
-                                           (stroke.rstrip().lstrip().startswith('@'))
-                                           and stroke.rstrip().lstrip() not in ('@browser', '@bad'))]
-            tags += tag_in_file
-    return sorted(tags)
-
-
-def timer(func):
-    def wrapper(tag):
-        start_time = timeit.default_timer()
-        func(tag)
-        elapsed = timeit.default_timer() - start_time
-        return elapsed
-    return wrapper
 
 
 def start_serial(tag):

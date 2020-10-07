@@ -3,13 +3,12 @@ import json
 
 
 class Storage:
-    prices_from_db = dict()
-    actual_prices = dict()
-    report_data = list()
-    dividends = dict()
-    loaded_from_json = list()
-    scenario_results = dict()
-    scenario_results_json = dict()
+    prices_from_db = dict()         # цены на акции из базы
+    actual_prices = dict()          # цены на акции с сайта
+    report_data = list()            # названия компаний с выросшими акциями
+    dividends = dict()              # дивиденды
+    scenario_results = dict()       # информация о сценариях
+    scenario_results_json = dict()  # информация о сценариях из json
 
     def __init__(self):
         conn = sqlite3.connect(r'.\stocks')

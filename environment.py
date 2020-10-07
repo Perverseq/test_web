@@ -40,9 +40,6 @@ def before_tag(context, tag):
 
 def before_all(context):
     context.storage = Storage()
-    # create_dir('.\\Screenshots')
-    # create_file(".\\result.json")
-    # create_file(".\\dividends.json")
 
 
 def after_step(context, step):
@@ -55,6 +52,7 @@ def after_scenario(context, scenario):
 
 
 def after_all(context):
+    # сохраняем результаты по сценариям в отчет
     with open('.\\result.json', 'r+', encoding='utf-8') as outfile:
         print(context.storage.scenario_results)
         try:
@@ -65,4 +63,3 @@ def after_all(context):
         except ValueError:
             print('results empty')
         json.dump(context.storage.scenario_results, outfile, ensure_ascii=False)
-    # context.storage.save_file(context.storage.scenario_results, '.\\result.json')
